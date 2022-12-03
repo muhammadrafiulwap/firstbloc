@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firstbloc/blocs/counter.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'FIRST BLOC',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -30,16 +33,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  CounterBloc bloc = CounterBloc();
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    bloc.input.add("add");
+  }
+
+  void _decrementCounter() {
+    bloc.input.add("min");
   }
 
   @override
   Widget build(BuildContext context) {
+    log('build');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -51,17 +63,35 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            StreamBuilder(
+                stream: bloc.output,
+                initialData: bloc.initCounter,
+                builder: (context, snapshot) {
+                  return Text(
+                    '${snapshot.data}',
+                    style: Theme.of(context).textTheme.headline4,
+                  );
+                }),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: _decrementCounter,
+            tooltip: 'Decrement',
+            child: const Icon(Icons.remove),
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          FloatingActionButton(
+            onPressed: _incrementCounter,
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
