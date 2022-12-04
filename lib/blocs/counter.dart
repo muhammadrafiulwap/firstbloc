@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 class CounterBloc {
   int _counter = 0;
@@ -15,7 +16,9 @@ class CounterBloc {
 
   CounterBloc() {
     _inputController.stream.listen((event) {
-      if (event == "add") {
+      if (event == "add" && _counter < 0) {
+        _counter = 1;
+      } else if (event == "add") {
         _counter++;
       } else {
         _counter--;

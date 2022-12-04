@@ -67,10 +67,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 stream: bloc.output,
                 initialData: bloc.initCounter,
                 builder: (context, snapshot) {
-                  return Text(
-                    '${snapshot.data}',
-                    style: Theme.of(context).textTheme.headline4,
-                  );
+                  return snapshot.data < 0
+                      ? Text(
+                          "Can't be negative",
+                          style: Theme.of(context).textTheme.headline4,
+                        )
+                      : Text(
+                          "${snapshot.data}",
+                          style: Theme.of(context).textTheme.headline4,
+                        );
                 }),
           ],
         ),
